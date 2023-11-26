@@ -1,0 +1,42 @@
+
+
+Sub ts2()
+ Dim r As Integer, c As Integer, k As Integer, m As Integer
+ 
+ Dim arr(), arr1(), arr2(), arr3()   '数组arr,arr1,arr2,arr3 分别用来储存：指标值，年份值，地区值，生成的地区编号
+ With Selection
+   r = .Rows.Count '计算所选单元格区域行数
+   c = .Columns.Count '计算所选单元格区域列数
+ End With
+ m = 1
+ k = 1
+ ReDim arr(1 To r * c), arr1(1 To r * c), arr2(1 To r * c), arr3(1 To r * c) '根据所选区域的行数和列数的乘积确定数组大小
+ 
+ Do                     '通过两层循环将所选区域的值提取到定义的数组中； for next 作为底层循环横向提取每行的值，
+                        'do 循环作为外层循环纵向提取不同地区对应的值
+ k = k + 1
+ For x = 2 To c
+   arr(m) = Cells(k, x) '提取指标值
+   arr1(m) = Cells(1, x) '提取年份值
+   arr2(m) = Cells(k, 1) '提取地区
+   arr3(m) = k - 1       '按顺序生成地区编号
+   m = m + 1
+ Next
+Loop Until k = r
+ Worksheets.Add().Name = "整理后"
+   With Sheets("整理后")
+       .Range("$A$1:$A$" & m) = Application.Transpose(arr2)
+       .Range("$B$1:$B$" & m) = Application.Transpose(arr3)
+       .Range("$C$1:$C$" & m) = Application.Transpose(arr1)
+       .Range("$D$1:$D$" & m) = Application.Transpose(arr)
+      
+  End With
+ 
+  With Sheets("整理后").Columns("A:D")
+        .HorizontalAlignment = xlLeft
+        .VerticalAlignment = xlBottom
+  End With
+End Sub
+
+
+
